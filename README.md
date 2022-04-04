@@ -124,7 +124,9 @@ console.log(someUtility());
 
 ### What is actually happened
 
-Depending on some circumstances, the bundle may has some components that are not tree-shaken by some reason. It seems that the reason is that SFC with `<script setup lang="ts">` and `<script lang="ts">` (simultaneously, like in MyButton & MyInput) **are not pure**.
+Depending on some circumstances, the bundle may has some components that are not tree-shaken by some reason.
+
+It seems that the reason is that SFC with `<script setup lang="ts">` and `<script lang="ts">` (simultaneously, like in MyButton & MyInput) **is not pure** in terms of tree-shaking.
 
 ## Reproduction
 
