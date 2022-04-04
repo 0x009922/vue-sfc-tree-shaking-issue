@@ -26,11 +26,14 @@ async function buildEntry(name: string) {
 async function audit(name: string) {
     const contents = await fs.readFile(`dist/${name}.es.js`, { encoding: 'utf-8' })
 
-    consola.info('Audit: %s\n  MyModal: %s\n  MyButton: %s\n  MyInput: %s', name, ...['MyModal', 'MyButton', 'MyInput'].map(
-        (component) => {const bool = contents.includes(component);
-            return bool ? chalk.bold.green('Yes') : chalk.bold.red('No')
-        }
-    ))
+    const COMPONENTS = ['MyModal', 'MyInput', 'MyButton', 'MyAnchor']
+
+    const componentsMapped = COMPONENTS.map(component => {
+        const found = contents.includes(component)
+        return `  ${component}: ${found ? chalk.bold.red('Yes') : chalk.bold.green('No')}`
+    }).join('\n')
+
+    consola.info(`Audit: ${name}\n${componentsMapped}`)
 }
 
 async function main() {

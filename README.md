@@ -4,7 +4,7 @@
 
 We have a bunch of components:
 
-- **MyButton**
+- **MyButton** (lang=ts, script setup + script)
  
   ```vue
   <script lang="ts">
@@ -24,7 +24,7 @@ We have a bunch of components:
   </template>
   ```
 
-- **MyInput**
+- **MyInput** (lang=ts, script setup + script)
  
   ```vue
   <script lang="ts">
@@ -45,7 +45,7 @@ We have a bunch of components:
   </template>
   ```
 
-- **MyModal**
+- **MyModal** (script setup + script)
  
   ```vue
   <script>
@@ -65,7 +65,29 @@ We have a bunch of components:
   </template>
   ```
 
-We export them from a single entrypoint:
+- **MyAnchor** (script setup, lang=ts)
+
+  ```vue
+  <script setup lang="ts">
+  const href = "hey"
+  </script>
+
+  <template>
+      <a v-bind="{ href }">Hey</a>
+  </template>
+  ```
+
+We have some utility:
+
+```ts
+// FILE: some-util-mod.ts
+
+export function someUtility(): number {
+    return 42
+}
+```
+
+We export everything from a single entrypoint:
 
 ```ts
 // FILE: exports.ts
@@ -73,43 +95,36 @@ We export them from a single entrypoint:
 export { default as MyButton } from './MyButton.vue'
 export { default as MyInput } from './MyInput.vue'
 export { default as MyModal } from './MyModal.vue'
+export * from './some-util-mod'
 ```
 
-Then, we want to import only one component from this module and use it within our main entrypoint file:
+Them, we want to use the utility from this entrypoint in our `main.ts` file:
 
 ```ts
 // FILE: main.ts
 
-import { MyButton } from './exports'
+import { someUtility } from './exports'
 
-console.log(MyButton)
+console.log(someUtility())
 ```
 
-Then, we **bundle** it with **tree-shaking** using `vite` & `@vitejs/plugin-vue`
+And **bundle** it with **tree-shaking** using `vite` & `@vitejs/plugin-vue`
 
 ### What is expected
 
-Expected to get in the bundle only compiled MyButton and nothing about MyInput and MyModal.
+Expected to see in the tree-shaked bundle only `someUtility()` function:
+
+```js
+function someUtility() {
+  return 42;
+}
+
+console.log(someUtility());
+```
 
 ### What is actually happened
 
-Depending on some circumstances, there may be other components that are not tree-shaken by some reason.
-
-It turned out that if component has 2 script blocks with `lang="ts"` then it is not tree-shaken:
-
-```vue
-<script lang="ts">
-export default defineComponent({
-    name: 'MyInput'
-})
-</script>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-
-const model = ref('')
-</script>
-```
+Depending on some circumstances, the bundle may has some components that are not tree-shaken by some reason. It seems that the reason is that SFC with `<script setup lang="ts">` and `<script lang="ts">` (simultaneously, like in MyButton & MyInput) **are not pure**.
 
 ## Reproduction
 
@@ -128,29 +143,29 @@ You will see:
 
 ```
 vite v2.9.1 building for production...
-✓ 10 modules transformed.
-dist/entry-1.es.js   85.61 KiB / gzip: 21.94 KiB
+✓ 12 modules transformed.
+dist/entry-1.es.js   85.64 KiB / gzip: 21.95 KiB
+vite v2.9.1 building for production...
+✓ 12 modules transformed.
+dist/entry-2.es.js   85.64 KiB / gzip: 21.95 KiB
 vite v2.9.1 building for production...
 ✓ 10 modules transformed.
-dist/entry-2.es.js   85.61 KiB / gzip: 21.94 KiB
-vite v2.9.1 building for production...
-✓ 7 modules transformed.
-dist/entry-3.es.js   64.03 KiB / gzip: 15.80 KiB
+dist/entry-3.es.js   0.07 KiB / gzip: 0.08 KiB
 ℹ Audit: entry-1
   MyModal: No
-  MyButton: Yes
   MyInput: Yes
+  MyButton: Yes
+  MyAnchor: No
 ℹ Audit: entry-2
   MyModal: No
-  MyButton: Yes
   MyInput: Yes
+  MyButton: Yes
+  MyAnchor: No
 ℹ Audit: entry-3
   MyModal: No
-  MyButton: Yes
   MyInput: No
+  MyButton: No
+  MyAnchor: No
 ```
 
-That means that:
-
-- MyModal is tree-shaken in all entries (maybe because it is not `lang="ts"`)
-- MyInput is tree-shaken only in the 3rd entry (i think because of trivial top-level tree-shaking)
+Only 3rd entry is bundled purely.

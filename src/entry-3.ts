@@ -1,5 +1,4 @@
-import MyButton from "./MyButton.vue";
-import MyInput from "./MyInput.vue";
-import MyModal from "./MyModal.vue";
+import { someUtility } from './exports-type-3'
 
-console.log(MyButton)
+console.log(someUtility())
+

@@ -1,3 +1,3 @@
-import { MyButton } from './exports-type-1'
+import { someUtility } from './exports-type-1'
 
-console.log(MyButton)
+console.log(someUtility())
