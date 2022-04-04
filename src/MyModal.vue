@@ -5,7 +5,7 @@ export default {
 </script>
 
 <script setup>
-console.log('mua ha ha')
+console.log('some side effect')
 </script>
 
 <template>
