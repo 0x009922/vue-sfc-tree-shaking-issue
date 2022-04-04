@@ -99,7 +99,7 @@ export { default as MyAnchor } from './MyAnchor.vue'
 export * from './some-util-mod'
 ```
 
-Them, we want to use the utility from this entrypoint in our `main.ts` file:
+Then, we want to use the utility from this entrypoint in our `main.ts` file:
 
 ```ts
 // FILE: main.ts
