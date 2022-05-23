@@ -2,15 +2,10 @@
   "name": "vue-sfc-tree-shaking-issue",
   "private": true,
   "scripts": {
-    "go": "esno bundle"
+    "build": "vite build"
   },
   "dependencies": {
-    "@types/node": "^17.0.23",
     "@vitejs/plugin-vue": "^2.3.1",
-    "chalk": "^5.0.1",
-    "consola": "^2.15.3",
-    "esbuild": "^0.14.31",
-    "esno": "^0.14.1",
     "vite": "^2.9.1",
     "vue": "^3.2.31"
   }

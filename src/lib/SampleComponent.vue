@@ -1,16 +1,15 @@
 <script lang="ts">
 export default defineComponent({
-    name: 'MyInput'
+    name: 'SampleComponent'
 })
 </script>
-
 
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const model = ref('')
+const counter = ref(0)
 </script>
 
 <template>
-    <input v-model="model"> Hey
+    <button @click="counter++">{{ counter }}</button>
 </template>

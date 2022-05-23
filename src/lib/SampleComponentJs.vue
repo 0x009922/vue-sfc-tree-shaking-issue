@@ -1,10 +1,10 @@
-<script lang="ts">
+<script>
 export default defineComponent({
-    name: 'MyButton'
+    name: 'SampleComponentJs'
 })
 </script>
 
-<script setup lang="ts">
+<script setup>
 import { ref } from 'vue'
 
 const counter = ref(0)
