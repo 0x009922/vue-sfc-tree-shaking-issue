@@ -1,2 +1,2 @@
-export { default as SampleComponent } from './SampleComponentJs.vue'
+export { default as SampleComponent } from './SampleComponent.vue'
 export * from './pure-ts-module'
